@@ -13,6 +13,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Auth::routes();
+
+Route::group(['middleware' => ['auth']], function () {
+
+    //Dashboard
+    Route::get('/', function () {
+        return view('dashboard/index');
+    });
+
+    //user crud
+    Route::group(['prefix' => 'user'], function () {
+        Route::get('/', ['as' => 'user.list', 'uses' => 'UserController@index']);
+        Route::get('/create', ['as' => 'user.create', 'uses' => 'UserController@create']);
+        Route::post('/create', ['as' => 'user.save', 'uses' => 'UserController@save']);
+        Route::post('/status', ['as' => 'user.status', 'uses' => 'UserController@status']);
+    });
+
 });
+
